@@ -13,6 +13,7 @@ import {
   HStack,
   Tooltip,
   IconButton,
+  Tag,
 } from "@chakra-ui/react";
 import React, { useMemo, useState } from "react";
 import {
@@ -40,7 +41,7 @@ import { IoPower } from "react-icons/io5";
 import { useHistory } from "react-router-dom";
 
 export default function ColumnsTable(props) {
-  const { columnsData, tableData, onEditOpen } = props;
+  const { columnsData, tableData, onEditOpen, handlePrinterFieldsChange, setUpdateTable, updateTable, updatePrinterStatus } = props;
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
   const [toggleOnOff, setToggleOnOff] = useState('true')
@@ -127,27 +128,39 @@ export default function ColumnsTable(props) {
                     );
                   } else if (cell.column.Header === "Status") {
                     data = (
-                      <Text color={textColor} fontSize='sm' fontWeight='700'>
+                      <Tag
+                        colorScheme={cell.value == 'Online' ? 'green' : cell.value == 'Offline' ? 'red' : 'orange'}
+                        fontSize='sm' fontWeight='700'
+                      >
                         {cell.value}
-                      </Text>
+                      </Tag>
+                      // <Text color={textColor} fontSize='sm' fontWeight='700'>
+                      //   {cell.value}
+                      // </Text>
                     );
                   } else if (cell.column.Header === "Action") {
                     data = (
                       <HStack>
                         <Tooltip label='View this printer.' hasArrow bg='gray.300' color='black' size={'50px'}>
                           <IconButton
+                            h={'35px'}
+                            w={'35px'}
                             onClick={() => {
-                              history.push('/admin/printerView')
+                              history.push({
+                                pathname: '/admin/printerView',
+                                search: '?update=true',  // query string
+                                state: { printerId: row.values.id }
+                              })
 
                             }}
                             colorScheme='blue'
                             icon={<ViewIcon />}
                           />
-
-
                         </Tooltip>
                         <Tooltip label='Edit this printer.' hasArrow bg='gray.300' color='black' size={'50px'}>
                           <IconButton
+                            h={'35px'}
+                            w={'35px'}
                             onClick={() => {
                               onEditOpen(row.values.id)
                             }}
@@ -156,14 +169,18 @@ export default function ColumnsTable(props) {
                           />
 
                         </Tooltip>
-                        <Tooltip label={toggleOnOff ? 'Turn Off' : 'Turn on'} hasArrow bg='gray.300' color='black' size={'50px'}>
+                        <Tooltip label={row.values.status == 'Online' ? 'Go Offline' : 'Go Online'} hasArrow bg='gray.300' color='black' size={'50px'}>
                           <span>
                             <IconButton
+                              h={'35px'}
+                              w={'35px'}
+                              name="printerStatus"
                               onClick={() => {
+                                updatePrinterStatus(toggleOnOff ? 'Offline' : 'Online', row.values)
                                 setToggleOnOff(!toggleOnOff)
                               }
                               }
-                              colorScheme='blue'
+                              colorScheme={row.values.status == 'Online' ? 'green' : 'red'}
                               icon={<IoPower />}
                             />
                             {/* <IoPower boxSize={50} color={toggleOnOff ? 'green' : 'red'} onClick={() => {

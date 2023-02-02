@@ -40,16 +40,13 @@ function PrinterFormFields(props) {
           <FormErrorMessage>City is required.</FormErrorMessage>
         )}
       </FormControl>
-      <FormControl isInvalid={isError(newPrinterFields.printerStatus)}>
+      <FormControl>
         <FormLabel>Status</FormLabel>
         <RadioGroup name="printerStatus" value={newPrinterFields.printerStatus} onChange={handlePrinterFieldsChange} spacing={'24px'}>
           <Radio value='Draft' mr={'24px'}>Draft</Radio>
           <Radio value='Online' mr={'24px'}>Online</Radio>
           <Radio value='Offline'>Offline</Radio>
         </RadioGroup>
-        {isError(newPrinterFields.printerStatus) && (
-          <FormErrorMessage>Status is required.</FormErrorMessage>
-        )}
       </FormControl>
     </Box>
   );

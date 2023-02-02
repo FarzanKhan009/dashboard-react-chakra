@@ -54,19 +54,19 @@ function SignIn() {
   const loginHandler = (e) => {
     // const navigate = useNavigate()
     // console.log('emailOrUsername', emailOrUsername, 'password', password);
-    
-    console.log('being clicked', process.env.REACT_APP_BACKEND);
+
+    console.log('being clicked', process.env.REACT_APP_BACKEND, emailOrUsername, password);
     var data = JSON.stringify({
-      "emailOrUsername": "admin",
-      "password": "admin"
+      "emailOrUsername": emailOrUsername,
+      "password": password
     });
     var config = {
       method: 'post',
       url: `${process.env.REACT_APP_BACKEND}/api/auth/sign-in`,
-      headers: { 
-        'Content-Type': 'application/json', 
+      headers: {
+        'Content-Type': 'application/json',
       },
-      data : data,
+      data: data,
       withCredentials: true,
     };
     // setLoading(true)
@@ -93,7 +93,7 @@ function SignIn() {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-  
+
     });
     // navigate('/account')
   }
@@ -179,7 +179,10 @@ function SignIn() {
               mb='24px'
               fontWeight='500'
               size='lg'
-              onChange={(emailUsername => setemailOrUsername(emailUsername))}
+              onChange={(event) => {
+                console.log('event', event?.target?.value);
+                setemailOrUsername(event?.target?.value)
+              }}
             />
             <FormLabel
               ms='4px'
@@ -198,7 +201,10 @@ function SignIn() {
                 size='lg'
                 type={show ? "text" : "password"}
                 variant='auth'
-                onChange={(password => (setpassword(password)))}
+                onChange={(event) => {
+                  console.log('event', event?.target?.value);
+                  setpassword(event?.target?.value)
+                }}
               />
               <InputRightElement display='flex' alignItems='center' mt='4px'>
                 <Icon

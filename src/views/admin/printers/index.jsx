@@ -262,6 +262,8 @@ export default function UserReports() {
         setNewPrinterFields({ ...newPrinterFields, ...data })
         createPrinterTimingsInBulk(data.id)
         setUpdateTable(!updateTable)
+        setError(false)
+        setIsNew(false)
       })
       .catch((error) => {
         logAxiosError(error)
@@ -303,6 +305,8 @@ export default function UserReports() {
         setNewPrinterFields({ ...newPrinterFields, ...data })
         setUpdateTable(!updateTable)
         setIsFirstStep(false)
+        setError(false)
+        setIsNew(false)
         // onEditOpen()
 
       })
@@ -365,7 +369,7 @@ export default function UserReports() {
     const value = evt?.target?.value;
     let scheduleId;
 
-    // console.log('evt?.target?.value', evt?.target?.value, value === '', 'evt?.target', evt?.target, 'evt', evt);
+    console.log('evt?.target?.value', evt?.target?.value, value === '', 'evt?.target', evt?.target, 'evt', evt);
     if (evt?.target == 'startTime' || evt?.target == 'endTime') {
       let timings = newPrinterFields.timings
       const index = timings.findIndex(obj => {
@@ -419,6 +423,34 @@ export default function UserReports() {
         ...((value || value === '') ? { [evt?.target?.name]: value } : { printerStatus: evt })
       });
     }
+  }
+  const updatePrinterStatus = (status, printer) => {
+    console.log('status, id', status, printer);
+
+    var config = {
+      method: 'patch',
+      url: `${process.env.REACT_APP_BACKEND}/api/printers/${printer.id}`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify(
+        {
+          status: status
+        }
+      ),
+      withCredentials: true,
+    };
+    axios(config)
+      .then((response) => {
+        let data = {
+          printerStatus: response?.data?.status,
+        }
+        setUpdateTable(!updateTable)
+
+      })
+      .catch((error) => {
+        logAxiosError(error)
+      });
   }
 
   const updateSinglePrinterTime = (scheduleId, timeObj) => {
@@ -554,6 +586,10 @@ export default function UserReports() {
             onEditOpen={fetchSinglePrinterOnEdit}
             handlePageChange={handlePageChange}
             pagesQuantity={11}
+            handlePrinterFieldsChange={handlePrinterFieldsChange}
+            setUpdateTable={setUpdateTable}
+            updateTable={updateTable}
+            updatePrinterStatus={updatePrinterStatus}
           />
 
         </SimpleGrid>

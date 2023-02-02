@@ -32,6 +32,8 @@ export const defaulFieldsData = {
   printerLocation: "",
   printerCity: "",
   printerStatus: "",
+  lat: "1.7777",
+  long: "1.66666",
   timings:
     [
       {
